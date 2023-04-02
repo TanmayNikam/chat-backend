@@ -9,9 +9,10 @@ const chatsRoute = require("./routes/chatsRoute");
 const messagesRoute = require("./routes/messagesRoute");
 app.use(
   express.json({
-    limit: "50mb",
+    limit: "5mb",
   })
 );
+app.use(cors());
 
 const server = require("http").createServer(app);
 
@@ -48,7 +49,6 @@ io.on("connection", (socket) => {
     io.to(data.members[0]).to(data.members[1]).emit("started-typing", data);
   });
 
-
   socket.on("came-online", (userId) => {
     if (!onlineUsers.includes(userId)) {
       onlineUsers.push(userId);
@@ -76,6 +76,5 @@ app.use("/api/messages", messagesRoute);
 //     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 //   });
 // }
-
 
 server.listen(port, () => console.log(`Server running on port ${port}`));
