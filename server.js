@@ -19,7 +19,7 @@ const server = require("http").createServer(app);
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://gleeful-faun-3844da.netlify.app",
     methods: ["GET", "POST"],
   },
 });
