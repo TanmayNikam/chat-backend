@@ -15,7 +15,7 @@ router.post("/login", login);
 
 router.get("/get-current-user", authMiddleware, getCurrentUser);
 
-router.get("/get-all-users", getAllUsers);
+router.get("/get-all-users", authMiddleware, getAllUsers);
 
 router.post("/update-profile-picture", authMiddleware, updateProfilePicture);
 
