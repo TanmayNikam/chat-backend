@@ -21,8 +21,8 @@ const server = require("http").createServer(app);
 // https://gleeful-faun-3844da.netlify.app
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    origin: "https://main--willowy-eclair-0e7ed9.netlify.app",
+    methods: ["GET", "POST", "PATCH"],
   },
 });
 
