@@ -4,7 +4,6 @@ const Message = require("../models/messageModel");
 exports.createChat = async (req, res) => {
   try {
     const newChat = new Chat(req.body);
-    console.log(newChat);
     const savedChat = await newChat.save();
 
     await savedChat.populate("members");
@@ -92,7 +91,6 @@ exports.clearUnreadMessages = async (req, res) => {
 
 exports.clearGroupMessages = async (req, res) => {
   try {
-    console.log(req.body);
     const chat = await Chat.findById(req.body.chat);
     if (!chat) {
       return res.send({

@@ -31,7 +31,6 @@ let onlineUsers = [];
 
 io.on("connection", (socket) => {
   // socket events will be here
-  console.log(onlineUsers);
   socket.on("join-room", (userId) => {
     socket.join(userId);
   });
