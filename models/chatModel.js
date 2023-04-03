@@ -24,6 +24,11 @@ const chatSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    type: {
+      type: String,
+      enum: ["individual", "group"],
+      defualt: "individual",
+    },
   },
   {
     timestamps: true,

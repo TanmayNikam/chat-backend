@@ -19,9 +19,10 @@ app.use(morgan("tiny"));
 
 const server = require("http").createServer(app);
 // https://gleeful-faun-3844da.netlify.app
+// https://main--willowy-eclair-0e7ed9.netlify.app
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://main--willowy-eclair-0e7ed9.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PATCH"],
   },
 });
@@ -68,6 +69,24 @@ io.on("connection", (socket) => {
   socket.on("went-offline", (userId) => {
     onlineUsers = onlineUsers.filter((user) => user !== userId);
     io.emit("online-users-updated", onlineUsers);
+  });
+
+  socket.on("add-group", (data) => {
+    data.chat.members.forEach((mem) => {
+      io.to(mem);
+    });
+    io.emit("new-group", data);
+  });
+
+  socket.on("edit-group", (data) => {
+    let newMembers = data.chat.members.map((mem) => mem._id);
+    let allMembers = Array.from(new Set([...data.members, ...newMembers]));
+    allMembers.forEach((mem) => {
+      if (mem) {
+        io.to(mem);
+      }
+    });
+    io.emit("group-edit", data);
   });
 });
 
