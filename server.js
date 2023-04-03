@@ -4,6 +4,7 @@ const app = express();
 const dbConfig = require("./config/dbConfig");
 const port = process.env.PORT || 5000;
 const cors = require("cors");
+const morgan = require("morgan");
 
 const usersRoute = require("./routes/usersRoute");
 const chatsRoute = require("./routes/chatsRoute");
@@ -14,29 +15,31 @@ app.use(
   })
 );
 app.use(cors());
+app.use(morgan("tiny"));
 
 const server = require("http").createServer(app);
-
+// https://gleeful-faun-3844da.netlify.app
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://gleeful-faun-3844da.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
 
 // check the connection of socket from client
 let onlineUsers = [];
+
 io.on("connection", (socket) => {
   // socket events will be here
+  console.log(onlineUsers);
   socket.on("join-room", (userId) => {
     socket.join(userId);
   });
 
   // send message to clients (who are present in members array)
   socket.on("send-message", (message) => {
-    io.to(message.members[0])
-      .to(message.members[1])
-      .emit("receive-message", message);
+    message.members.forEach((mem) => io.to(mem));
+    io.emit("receive-message", message);
   });
 
   // clear unread messages
@@ -44,6 +47,11 @@ io.on("connection", (socket) => {
     io.to(data.members[0])
       .to(data.members[1])
       .emit("unread-messages-cleared", data);
+  });
+
+  socket.on("clear-group-unread-messages", (data) => {
+    data.members.forEach((mem) => io.to(mem));
+    io.emit("unread-group-messages-cleared", data);
   });
 
   socket.on("typing", (data) => {

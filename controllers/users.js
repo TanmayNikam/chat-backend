@@ -33,7 +33,9 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email }).select(
+      "+password"
+    );
     if (!user) {
       return res.send({
         success: false,
@@ -60,6 +62,7 @@ exports.login = async (req, res) => {
       data: token,
     });
   } catch (error) {
+    console.log(error);
     res.send({
       message: error.message,
       success: false,
@@ -110,7 +113,9 @@ exports.updateProfilePicture = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const allUsers = await User.find({ _id: { $ne: req.body.userId } });
+    const allUsers = await User.find({ _id: { $ne: req.body.userId } }).select(
+      "-password"
+    );
     res.send({
       success: true,
       message: "Users fetched successfully",

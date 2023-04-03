@@ -18,11 +18,16 @@ const chatSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    name: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   }
 );
-
 
 module.exports = mongoose.model("chats", chatSchema);

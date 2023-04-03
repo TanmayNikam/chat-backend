@@ -1,10 +1,10 @@
-const Chat= require("../models/chatModel")
-const Message = require("../models/messageModel")
-
+const Chat = require("../models/chatModel");
+const Message = require("../models/messageModel");
 
 exports.createChat = async (req, res) => {
   try {
     const newChat = new Chat(req.body);
+    console.log(newChat);
     const savedChat = await newChat.save();
 
     await savedChat.populate("members");
@@ -20,8 +20,7 @@ exports.createChat = async (req, res) => {
       error: error.message,
     });
   }
-}
-
+};
 
 exports.getAllChats = async (req, res) => {
   try {
@@ -33,6 +32,7 @@ exports.getAllChats = async (req, res) => {
       .populate("members")
       .populate("lastMessage")
       .sort({ updatedAt: -1 });
+
     res.send({
       success: true,
       message: "Chats fetched successfully",
@@ -46,7 +46,6 @@ exports.getAllChats = async (req, res) => {
     });
   }
 };
-
 
 exports.clearUnreadMessages = async (req, res) => {
   try {
@@ -83,6 +82,77 @@ exports.clearUnreadMessages = async (req, res) => {
       data: updatedChat,
     });
   } catch (error) {
+    res.send({
+      success: false,
+      message: "Error clearing unread messages",
+      error: error.message,
+    });
+  }
+};
+
+exports.clearGroupMessages = async (req, res) => {
+  try {
+    console.log(req.body);
+    const chat = await Chat.findById(req.body.chat);
+    if (!chat) {
+      return res.send({
+        success: false,
+        message: "Chat not found",
+      });
+    }
+    await Message.updateMany(
+      {
+        chat: req.body.chat,
+        read: false,
+      },
+      {
+        $pull: { readBy: req.body.usr },
+      }
+    );
+    await Message.updateMany(
+      {
+        chat: req.body.chat,
+        read: false,
+        readBy: {
+          $size: 0,
+        },
+      },
+      {
+        read: true,
+      }
+    );
+
+    res.send({
+      success: true,
+      message: "Unread messages cleared successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      success: false,
+      message: "Error clearing unread messages",
+      error: error.message,
+    });
+  }
+};
+
+exports.updateGroup = async (req, res) => {
+  try {
+    const chat = req.body.chat;
+    const newChat = await Chat.findByIdAndUpdate(
+      req.body.chat._id,
+      { name: chat.name, members: chat.members },
+      { new: true }
+    )
+      .populate("members")
+      .populate("lastMessage");
+    res.status(200).json({
+      message: "Group updated successfully",
+      data: newChat,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
     res.send({
       success: false,
       message: "Error clearing unread messages",
