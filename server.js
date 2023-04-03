@@ -18,11 +18,9 @@ app.use(cors());
 app.use(morgan("tiny"));
 
 const server = require("http").createServer(app);
-// https://gleeful-faun-3844da.netlify.app
-// https://main--willowy-eclair-0e7ed9.netlify.app
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://monumental-squirrel-cda728.netlify.app",
     methods: ["GET", "POST", "PATCH"],
   },
 });
