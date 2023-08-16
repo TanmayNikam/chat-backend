@@ -20,7 +20,7 @@ app.use(morgan("tiny"));
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: "64dd16ed4a7c6f132151b7b7--lambent-unicorn-5d26be.netlify.app",
+    origin: "https://lambent-lokum-8f0698.netlify.app",
     methods: ["GET", "POST", "PATCH"],
   },
 });
