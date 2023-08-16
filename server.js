@@ -20,7 +20,7 @@ app.use(morgan("tiny"));
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://monumental-squirrel-cda728.netlify.app",
+    origin: "64dd16ed4a7c6f132151b7b7--lambent-unicorn-5d26be.netlify.app",
     methods: ["GET", "POST", "PATCH"],
   },
 });
